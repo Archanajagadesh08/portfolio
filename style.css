@@ -1,0 +1,641 @@
+
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Poppins', sans-serif;
+    }
+
+    body {
+      background:#29525b;
+      color: #fff;
+      scroll-behavior: smooth;
+    }
+
+    section {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      flex-direction: column;
+      padding: 40px;
+      opacity: 0;
+      transform: translateY(50px);
+      transition: all 0.8s ease;
+    }
+
+    section.show {
+      opacity: 1;
+      transform: translateY(0);
+    }
+
+    h1 {
+      font-size: 3rem;
+      margin-bottom: 20px;
+      letter-spacing: 2px;
+    }
+
+    p {
+      max-width: 600px;
+      text-align: center;
+      line-height: 1.6;
+      opacity: 0.8;
+    }
+
+    /* Home */
+    #home {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.content {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 80px;
+  width: 100%;
+  max-width: 1100px;
+}
+.text {
+  flex: 1;
+  text-align: left;
+}
+
+.text h1 {
+  font-size: 40px;
+}
+
+.text h1 span {
+  color: #6fe7ff; /* keep your theme */
+}
+
+.text h2 {
+  margin-top: 10px;
+  font-size: 22px;
+}
+
+.text p {
+  margin-top: 10px;
+  font-size: 16px;
+}
+.image {
+  flex: 1;
+  display: flex;
+  justify-content: center;
+}
+
+.image img {
+  width: 300px;
+  height: 300px;
+  object-fit: contain;
+  mix-blend-mode: screen;
+}
+button {
+  margin-top: 20px;
+  padding: 12px 25px;
+  border: none;
+  border-radius: 25px;
+  background: #1c2c5b;
+  color: #6fe7ff;
+  cursor: pointer;
+}
+
+    .logo {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+.logo img {
+  width: 200px;
+  height: 200px;
+  object-fit: contain;
+  background: transparent;
+}
+
+   /* About Section New Style */
+#about {
+  background: #29525b;
+}
+
+.about-container {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  gap: 40px;
+  max-width: 1000px;
+}
+
+.about-text {
+  flex: 1;
+  min-width: 280px;
+}
+
+.about-text h1 {
+  font-size: 2.5rem;
+  margin-bottom: 15px;
+}
+
+.about-text p {
+  text-align: left;
+  opacity: 0.85;
+}
+
+.about-text span {
+  color: #a8e6cf;
+  font-weight: 600;
+}
+
+/* Tags */
+.about-tags {
+  margin-top: 20px;
+}
+
+.about-tags span {
+  display: inline-block;
+  padding: 6px 12px;
+  margin: 5px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.1);
+  font-size: 0.8rem;
+}
+
+/* Glass Card */
+.about-card {
+  flex: 1;
+  min-width: 250px;
+  padding: 25px;
+  border-radius: 20px;
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(10px);
+  border: 1px solid rgba(255,255,255,0.1);
+  transition: 0.3s;
+}
+
+.about-card:hover {
+  transform: translateY(-8px);
+  background: rgba(255,255,255,0.12);
+}
+
+.about-card h3 {
+  margin-bottom: 10px;
+}
+
+    /* Projects */
+    /* Projects Layout */
+.projects-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 30px;
+  max-width: 1000px;
+}
+
+/* Card */
+.project-card {
+  position: relative;
+  border-radius: 20px;
+  overflow: hidden;
+  cursor: pointer;
+}
+
+/* Image */
+.project-card img {
+  width: 100%;
+  height: 220px;
+  object-fit: cover;
+  transition: 0.5s;
+}
+
+/* Overlay */
+.project-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+
+  background: linear-gradient(to top, rgba(0,0,0,0.85), transparent);
+  color: white;
+
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 20px;
+
+  opacity: 0;
+  transition: 0.4s;
+}
+
+/* Hover Effects */
+.project-card:hover img {
+  transform: scale(1.1);
+}
+
+.project-card:hover .project-overlay {
+  opacity: 1;
+}
+
+/* Text */
+.project-overlay h3 {
+  margin-bottom: 5px;
+}
+
+.project-overlay p {
+  font-size: 0.85rem;
+  opacity: 0.8;
+}
+
+.project-overlay span {
+  font-size: 0.75rem;
+  color: #6fe7ff;
+}
+
+/* Button */
+.project-overlay a {
+  margin-top: 10px;
+  display: inline-block;
+  padding: 8px 15px;
+  background: #6fe7ff;
+  color: black;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.8rem;
+  transition: 0.3s;
+}
+
+.project-overlay a:hover {
+  background: white;
+}
+    /* Navbar */
+nav {
+  position: fixed;
+  width: 100%;
+  top: 0;
+  background: rgba(0, 0, 0, 0.4);
+  backdrop-filter: blur(10px);
+  display: flex;
+  justify-content: space-between;
+  padding: 8px 40px;
+  z-index: 1000;
+}
+
+nav ul {
+  display: flex;
+  gap: 25px;
+  list-style: none;
+  margin-top: 20px;
+}
+
+nav ul li a {
+  position: relative;
+  text-decoration: none;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  transition: color 0.3s ease;
+  font-family: "Poppins", sans-serif;
+}
+
+nav ul li a::after {
+  content: "";
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 0%;
+  height: 3px;
+  background: #000;
+  transition: width 0.3s ease;
+}
+
+
+nav ul li a.active::after {
+  width: 100%;
+}
+
+/* Logo */
+.logo {
+  width: 60px;
+  height: 50px;
+  border-radius: 50%;
+  object-fit: cover;
+}
+
+    /* Fade Directions */
+.fade-left {
+  opacity: 0;
+  transform: translateX(-50px);
+  transition: all 1s ease;
+}
+
+.fade-right {
+  opacity: 0;
+  transform: translateX(50px);
+  transition: all 1s ease;
+}
+
+.show .fade-left,
+.show .fade-right {
+  opacity: 1;
+  transform: translateX(0);
+}
+
+/* Glow Heading */
+.glow-text {
+  position: relative;
+}
+
+.glow-text::after {
+  content: '';
+  position: absolute;
+  left: 0;
+  bottom: -5px;
+  width: 50px;
+  height: 3px;
+  background: #a8e6cf;
+  transition: 0.4s;
+}
+
+.glow-text:hover::after {
+  width: 120px;
+}
+
+/* Tags Hover Glow */
+.about-tags span {
+  transition: 0.3s;
+}
+
+.about-tags span:hover {
+  background: #a8e6cf;
+  color: #000;
+  transform: scale(1.1);
+}
+
+/* Floating Card Animation */
+.about-card {
+  animation: floatCard 4s ease-in-out infinite;
+}
+
+@keyframes floatCard {
+  0% { transform: translateY(0px); }
+  50% { transform: translateY(-10px); }
+  100% { transform: translateY(0px); }
+}
+
+/* Extra Hover Depth */
+.about-card:hover {
+  transform: translateY(-12px) scale(1.02);
+}
+
+/* SKILLS GRID */
+.skills-container {
+  margin-top: 25px;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 15px;
+}
+
+/* INDIVIDUAL SKILL BOX */
+.skill-box {
+  background: rgba(255,255,255,0.08);
+  padding: 12px;
+  border-radius: 12px;
+  transition: 0.3s;
+  text-align: left;
+}
+
+.skill-box:hover {
+  transform: translateY(-5px);
+  background: rgba(255,255,255,0.15);
+}
+
+.skill-box h4 {
+  font-size: 14px;
+  margin-bottom: 5px;
+  color: #a8e6cf;
+}
+
+.skill-box p {
+  font-size: 13px;
+  opacity: 0.9;
+}
+
+/* IMPROVE SPACING */
+.about-block {
+  margin-top: 25px;
+}
+
+/* CARD ENHANCEMENT */
+.about-card {
+  line-height: 1.6;
+}
+/* Contact Section */
+#contact {
+  background: #29525b;
+  text-align: center;
+}
+
+.contact-subtext {
+  margin-bottom: 30px;
+  opacity: 0.8;
+}
+
+/* Container */
+.contact-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 25px;
+  margin-bottom: 40px;
+}
+
+/* Cards */
+.contact-card {
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+  padding: 20px;
+  border-radius: 15px;
+  width: 260px;
+  transition: 0.4s;
+}
+
+.contact-card:hover {
+  transform: translateY(-10px) scale(1.03);
+  background: rgba(255,255,255,0.12);
+}
+
+.contact-card a {
+  display: block;
+  margin-top: 10px;
+  color: #a8e6cf;
+  text-decoration: none;
+  font-size: 0.9rem;
+}
+
+.contact-card a:hover {
+  text-decoration: underline;
+}
+
+/* Icons */
+.icon {
+  width: 30px;
+  height: 30px;
+}
+
+/* Comment Section */
+.comments-section {
+  background: rgba(255,255,255,0.05);
+  padding: 25px;
+  border-radius: 15px;
+  max-width: 500px;
+  margin: auto;
+}
+
+.comments-section input,
+.comments-section textarea {
+  width: 100%;
+  margin: 10px 0;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  outline: none;
+}
+
+.comments-section button {
+  background: #a8e6cf;
+  color: #000;
+  padding: 10px 20px;
+  border-radius: 20px;
+  border: none;
+  cursor: pointer;
+}
+
+.comments-section button:hover {
+  opacity: 0.8;
+}
+
+/* Comment Boxes */
+.comment-boxes {
+  max-width: 500px;
+  margin: 20px auto;
+}
+
+.comment {
+  background: rgba(255,255,255,0.08);
+  padding: 10px;
+  border-radius: 10px;
+  margin-bottom: 10px;
+}
+/* Flip Card Home */
+.flip-card-home {
+  width: 320px;
+  height: 380px;
+  perspective: 1000px;
+  border-radius: 30px;
+}
+
+.flip-inner-home {
+  width: 100%;
+  height: 100%;
+  position: relative;
+  transition: transform 0.8s ease;
+  transform-style: preserve-3d;
+}
+
+.flip-card-home:hover .flip-inner-home {
+  transform: rotateY(180deg);
+}
+
+/* Front & Back */
+.flip-front-home,
+.flip-back-home {
+  position: absolute;
+  width: 100%;
+  height: 100%;
+  border-radius: 30px;
+  overflow: hidden;
+  backface-visibility: hidden;
+
+  /* glow look */
+  box-shadow: 0 0 40px rgba(111,231,255,0.3);
+}
+
+/* Image */
+.flip-front-home img,
+.flip-back-home img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Back side */
+.flip-back-home {
+  transform: rotateY(180deg);
+}
+/* lets Connect Button */
+.connect-btn {
+  display: inline-block;
+  margin-top: 25px;
+  padding: 14px 30px;
+  border-radius: 30px;
+  background: linear-gradient(135deg, #1c2c5b, #6fe7ff);
+  color: white;
+  text-decoration: none;
+  font-weight: 600;
+  transition: 0.3s;
+}
+
+.connect-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(111,231,255,0.6);
+}
+html {
+  scroll-behavior: smooth;
+}
+/* 📱 Mobile Only Fix */
+@media (max-width: 768px) {
+
+  .content {
+    flex-direction: column;
+    text-align: center;
+    gap: 30px;
+  }
+
+  .text {
+    text-align: center;
+  }
+
+  .image img {
+    width: 200px;
+    height: auto;
+  }
+
+  .flip-card-home {
+    width: 240px;
+    height: 300px;
+  }
+
+  .projects-container {
+    grid-template-columns: 1fr;
+  }
+
+  .contact-container {
+    flex-direction: column;
+    align-items: center;
+  }
+
+  button, .connect-btn {
+    width: 100%;
+    max-width: 250px;
+  }
+
+  nav {
+    flex-wrap: wrap;
+    gap: 10px;
+  }
+
+  nav a {
+    font-size: 0.8rem;
+  }
+}
