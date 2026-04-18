@@ -267,6 +267,23 @@ button {
 .project-overlay a:hover {
   background: white;
 }
+.github-link {
+  margin-top: 6px;
+  display: inline-block;
+  padding: 6px 14px;
+  background: transparent;
+  color: #6fe7ff;
+  border: 1px solid #6fe7ff;
+  border-radius: 20px;
+  text-decoration: none;
+  font-size: 0.75rem;
+  transition: 0.3s;
+}
+
+.github-link:hover {
+  background: #6fe7ff;
+  color: black;
+}
     /* Navbar */
 nav {
   position: fixed;
@@ -585,13 +602,68 @@ nav ul li a.active::after {
   font-weight: 600;
   transition: 0.3s;
 }
+/* Reply input + button layout */
+.comment input {
+  width: 100%;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+  margin-top: 10px;
+}
 
+/* Reply button */
+.comment button {
+  width: 100%;
+  margin-top: 10px;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  background: #1c2c5b;
+  color: #6fe7ff;
+  cursor: pointer;
+}
+.reply-box {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+}
+
+.reply-box input {
+  flex: 1;
+  padding: 10px;
+  border-radius: 8px;
+  border: none;
+}
+
+.reply-box button {
+  padding: 10px 15px;
+  border-radius: 20px;
+  border: none;
+  background: #1c2c5b;
+  color: #6fe7ff;
+}
 .connect-btn:hover {
   transform: scale(1.05);
   box-shadow: 0 0 20px rgba(111,231,255,0.6);
 }
 html {
   scroll-behavior: smooth;
+}
+.action-buttons {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  flex-wrap: wrap;
+}
+
+.action-buttons button {
+  flex: 1;
+  padding: 10px;
+  border-radius: 20px;
+  border: none;
+  background: #1c2c5b;
+  color: #6fe7ff;
+  cursor: pointer;
 }
 /* 📱 Mobile Only Fix */
 @media (max-width: 768px) {
@@ -638,4 +710,7 @@ html {
   nav a {
     font-size: 0.8rem;
   }
+}
+section {
+  scroll-margin-top: 80px;
 }

@@ -47,28 +47,35 @@ async function loadComments() {
   const res = await fetch(`${API}/comments`);
   const data = await res.json();
 
-  commentBoxes.innerHTML = data.map(c => `
-    <div class="comment">
-      <strong>${c.name}</strong>
-      <p>${c.message}</p>
+ commentBoxes.innerHTML = data.map(c => `
+  <div class="comment">
+    <strong>${c.name}</strong>
 
+    <!-- ORIGINAL MESSAGE -->
+    <p id="msg-${c._id}">${c.message}</p>
+
+    <!-- EDIT INPUT (HIDDEN) -->
+    <input id="edit-${c._id}" value="${c.message}" style="display:none;">
+
+    <!-- REPLIES -->
+    <div class="replies">
       ${c.replies.map(r => `
         <p><b>${r.name}:</b> ${r.message}</p>
       `).join('')}
-
-      <input placeholder="Reply..." id="reply-${c._id}">
-      <button onclick="addReply('${c._id}')">Reply</button>
-
-      <input id="edit-${c._id}" style="display:none;" placeholder="Edit">
-
-      <div>
-        <button onclick="deleteComment('${c._id}')">Delete</button>
-        <button onclick="showEdit('${c._id}')">Edit</button>
-        <button onclick="saveEdit('${c._id}')">Save</button>
-      </div>
     </div>
-  `).join('');
-}
+
+    <!-- REPLY -->
+    <input placeholder="Reply..." id="reply-${c._id}">
+
+    <!-- BUTTONS -->
+    <div class="action-buttons">
+      <button onclick="addReply('${c._id}')">Reply</button>
+      <button onclick="deleteComment('${c._id}')">Delete</button>
+      <button onclick="showEdit('${c._id}')">Edit</button>
+      <button onclick="saveEdit('${c._id}')">Save</button>
+    </div>
+  </div>
+`).join('');}
 
 // DELETE
 window.deleteComment = async function(id) {
@@ -79,25 +86,30 @@ window.deleteComment = async function(id) {
 // SHOW EDIT
 window.showEdit = function(id) {
   document.getElementById(`edit-${id}`).style.display = "block";
+  document.getElementById(`msg-${id}`).style.display = "none";
 }
 
 // SAVE EDIT
 window.saveEdit = async function(id) {
-  const text = document.getElementById(`edit-${id}`).value;
+  const input = document.getElementById(`edit-${id}`);
+  const newText = input.value;
+
+  if (!newText.trim()) return;
 
   await fetch(`${API}/comment/${id}`, {
     method: "PUT",
     headers: {"Content-Type": "application/json"},
-    body: JSON.stringify({ message: text })
+    body: JSON.stringify({ message: newText })
   });
 
   loadComments();
 }
-
 // REPLY
 window.addReply = async function(id) {
   const input = document.getElementById(`reply-${id}`);
   const message = input.value;
+
+  if (!message.trim()) return; // prevent empty
 
   await fetch(`${API}/reply/${id}`, {
     method: "POST",
@@ -105,7 +117,8 @@ window.addReply = async function(id) {
     body: JSON.stringify({ name: "Archana", message })
   });
 
-  loadComments();
+  input.value = ""; // clear input
+  loadComments();   // reload comments with replies
 }
 
 // ENTER KEY
