@@ -324,7 +324,9 @@ nav ul li a::after {
   background: #000;
   transition: width 0.3s ease;
 }
-
+section {
+  scroll-margin-top: 100px;
+}
 
 nav ul li a.active::after {
   width: 100%;
@@ -556,44 +558,39 @@ nav ul li a.active::after {
   width: 100%;
   height: 100%;
   position: relative;
-  transition: transform 0.8s ease;
   transform-style: preserve-3d;
+  transition: transform 0.8s;
 }
 
+/* IMPORTANT FIX */
 .flip-card-home:hover .flip-inner-home {
   transform: rotateY(180deg);
 }
 
-/* Front & Back */
 .flip-front-home,
 .flip-back-home {
   position: absolute;
   width: 100%;
   height: 100%;
   border-radius: 30px;
-  overflow: hidden;
   backface-visibility: hidden;
-
-  /* glow look */
-  box-shadow: 0 0 40px rgba(111,231,255,0.3);
+  top: 0;
+  left: 0;
 }
 
-/* Image */
-.flip-front-home img,
-.flip-back-home img {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
+/* FRONT */
+.flip-front-home {
+  z-index: 2;
 }
 
-/* Back side */
+/* BACK */
 .flip-back-home {
   transform: rotateY(180deg);
 }
 /* lets Connect Button */
 .connect-btn {
-  display: inline-block;
-  margin-top: 25px;
+  display: block;
+  margin: 25px auto;   /* THIS centers it */
   padding: 14px 30px;
   border-radius: 30px;
   background: linear-gradient(135deg, #1c2c5b, #6fe7ff);
@@ -601,6 +598,7 @@ nav ul li a.active::after {
   text-decoration: none;
   font-weight: 600;
   transition: 0.3s;
+  text-align: center;
 }
 /* Reply input + button layout */
 .comment input {
@@ -665,52 +663,167 @@ html {
   color: #6fe7ff;
   cursor: pointer;
 }
-/* 📱 Mobile Only Fix */
+/* --- ULTIMATE RESPONSIVE PATCH --- */
+
 @media (max-width: 768px) {
+  /* 1. Fix Navbar */
+  nav {
+    padding: 10px 15px;
+    height: auto;
+    flex-wrap: wrap; /* Allows menu to drop down if too wide */
+    justify-content: center;
+  }
+
+  nav ul {
+    margin-top: 10px;
+    gap: 15px;
+    width: 100%;
+    justify-content: center;
+  }
+
+  nav ul li a {
+    font-size: 14px;
+  }
+
+  .logo {
+    width: 40px; /* Smaller logo for mobile */
+    height: 40px;
+  }
+
+  /* 2. Fix Home Section Spacing */
+  section {
+    padding: 80px 20px 40px 20px; /* More top padding so navbar doesn't cover text */
+  }
 
   .content {
+    flex-direction: column-reverse;
+    gap: 20px;
+  }
+
+  .text h1 {
+    font-size: 2rem;
+  }
+
+  .image img, .flip-card-home {
+    width: 240px; 
+    height: 240px;
+  }
+
+  /* 3. FIX PROJECTS (The horizontal cut-off) */
+  .projects-container {
+    display: flex;
+    flex-direction: column; /* Stack cards vertically on mobile */
+    align-items: center;
+    width: 100%;
+    gap: 20px;
+  }
+
+  .project-card {
+    width: 100%;
+    max-width: 320px; /* Prevents card from being too huge */
+  }
+
+  .project-card img {
+    height: 200px;
+  }
+
+  /* 4. Fix About Section */
+  .about-container {
     flex-direction: column;
     text-align: center;
-    gap: 30px;
   }
 
-  .text {
+  .about-text p {
     text-align: center;
   }
 
-  .image img {
-    width: 200px;
-    height: auto;
-  }
-
-  .flip-card-home {
-    width: 240px;
-    height: 300px;
-  }
-
-  .projects-container {
-    grid-template-columns: 1fr;
-  }
-
+  /* 5. Fix Contact Cards */
   .contact-container {
     flex-direction: column;
     align-items: center;
   }
 
-  button, .connect-btn {
-    width: 100%;
-    max-width: 250px;
-  }
-
-  nav {
-    flex-wrap: wrap;
-    gap: 10px;
-  }
-
-  nav a {
-    font-size: 0.8rem;
+  .contact-card {
+    width: 90%;
   }
 }
-section {
-  scroll-margin-top: 80px;
+
+/* For Extra Small Screens (iPhone SE, etc) */
+@media (max-width: 380px) {
+  nav ul {
+    gap: 8px;
+  }
+  
+  nav ul li a {
+    font-size: 12px;
+  }
+
+  .text h1 {
+    font-size: 1.6rem;
+  }
+}
+.flip-inner-home.flip-active {
+  transform: rotateY(180deg);
+}
+/* ===== FINAL CONTACT FIX ===== */
+
+.contact-container {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;
+  gap: 20px;
+}
+
+.contact-card {
+  width: 280px;
+  padding: 20px;
+  border-radius: 15px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+
+  background: rgba(255,255,255,0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255,255,255,0.1);
+
+  text-align: center;
+}
+
+.contact-card .icon {
+  width: 28px;
+  height: 28px;
+}
+
+.contact-card a {
+  color: #a8e6cf;
+  text-decoration: none;
+  font-size: 0.9rem;
+
+  white-space: nowrap; /* keeps email in one line */
+}
+
+.contact-card a:hover {
+  text-decoration: underline;
+}
+
+/* MOBILE */
+@media (max-width: 600px) {
+  .contact-card {
+    flex-direction: column;
+    width: 90%;
+  }
+
+  .contact-card a {
+    white-space: normal; /* allow break only in mobile */
+    word-break: break-all;
+  }
+}
+
+/* DESKTOP */
+@media (min-width: 768px) {
+  .contact-card {
+    width: 320px;
+  }
 }

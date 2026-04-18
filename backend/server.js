@@ -1,17 +1,36 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const nodemailer = require("nodemailer");
 
 const app = express();
 app.use(cors());
 app.use(express.json());
 
-// 🔗 MongoDB connection
+/* ================= EMAIL SETUP ================= */
+const transporter = nodemailer.createTransport({
+  service: "gmail",
+  auth: {
+    user: "archanajagadesh08@gmail.com",
+    pass: "mgkxdmkygfcjgkwb" // ✅ REMOVE SPACES
+  }
+});
+
+// 🔍 CHECK IF EMAIL CONFIG WORKS
+transporter.verify((err, success) => {
+  if (err) {
+    console.log("❌ MAIL ERROR:", err);
+  } else {
+    console.log("✅ MAIL READY");
+  }
+});
+
+/* ================= DATABASE ================= */
 mongoose.connect('mongodb+srv://archanajagadesh08_db_user:eMkiiWwutEJ5Df7n@archana.cfpdggh.mongodb.net/?appName=Archana')
   .then(() => console.log("DB connected"))
   .catch(err => console.log(err));
 
-// 🧠 Schema
+/* ================= SCHEMA ================= */
 const commentSchema = new mongoose.Schema({
   name: String,
   message: String,
@@ -25,38 +44,94 @@ const commentSchema = new mongoose.Schema({
 
 const Comment = mongoose.model('Comment', commentSchema);
 
-// ➕ Add comment
+/* ================= ADD COMMENT ================= */
 app.post('/comment', async (req, res) => {
-  const newComment = new Comment(req.body);
-  await newComment.save();
-  res.send("Comment saved");
-});
+  try {
+    const { name, message } = req.body;
 
-// 📥 Get comments
+    const newComment = new Comment({ name, message });
+    await newComment.save();
+
+    // 📩 SEND EMAIL
+    await transporter.sendMail({
+      from: "archanajagadesh08@gmail.com",
+      to: "archanajagadesh08@gmail.com",
+      subject: "New Comment 💬",
+      text: `New comment from ${name}\n\n${message}`
+    });
+
+    console.log("✅ EMAIL SENT");
+
+    res.send("Comment saved + Email sent");
+
+  } catch (error) {
+    console.log("❌ EMAIL ERROR:", error);
+    res.send("Comment saved but email failed");
+  }
+});
+// 📥 GET ALL COMMENTS (VERY IMPORTANT)
 app.get('/comments', async (req, res) => {
-  const data = await Comment.find();
-  res.json(data);
+  try {
+    const data = await Comment.find();
+    res.json(data);
+  } catch (err) {
+    console.log("❌ FETCH ERROR:", err);
+    res.status(500).send("Error fetching comments");
+  }
 });
-
 // 💬 Add reply
 app.post('/reply/:id', async (req, res) => {
-  const comment = await Comment.findById(req.params.id);
-  comment.replies.push(req.body);
-  await comment.save();
-  res.send("Reply added");
+  try {
+    const comment = await Comment.findById(req.params.id);
+    comment.replies.push(req.body);
+    await comment.save();
+    res.send("Reply added");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Reply failed");
+  }
 });
-// DELETE COMMENT
+// ❌ Delete comment
 app.delete('/comment/:id', async (req, res) => {
-  await Comment.findByIdAndDelete(req.params.id);
-  res.send("Comment deleted");
+  try {
+    await Comment.findByIdAndDelete(req.params.id);
+    res.send("Comment deleted");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Delete failed");
+  }
+});
+// ✏️ Edit comment
+app.put('/comment/:id', async (req, res) => {
+  try {
+    await Comment.findByIdAndUpdate(req.params.id, {
+      message: req.body.message
+    });
+    res.send("Comment updated");
+  } catch (err) {
+    console.log(err);
+    res.status(500).send("Update failed");
+  }
 });
 
-// EDIT COMMENT
-app.put('/comment/:id', async (req, res) => {
-  await Comment.findByIdAndUpdate(req.params.id, {
-    message: req.body.message
-  });
-  res.send("Comment updated");
+/* ================= TEST EMAIL ================= */
+app.get('/testmail', async (req, res) => {
+  try {
+    await transporter.sendMail({
+      from: "archanajagadesh08@gmail.com",
+      to: "archanajagadesh08@gmail.com",
+      subject: "Test Email 💌",
+      text: "If you see this, email works!"
+    });
+
+    console.log("✅ TEST EMAIL SENT");
+    res.send("Email sent");
+
+  } catch (err) {
+    console.log("❌ TEST EMAIL ERROR:", err);
+    res.send("Error sending email");
+  }
 });
-// 🚀 Start server
+
+/* ================= START SERVER ================= */
 app.listen(5000, () => console.log("Server running on port 5000"));

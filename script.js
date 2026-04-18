@@ -122,12 +122,10 @@ window.addReply = async function(id) {
 }
 
 // ENTER KEY
-document.addEventListener("keydown", function(e) {
+form.addEventListener("keydown", function(e) {
   if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
-    if (document.activeElement.closest("#contactForm")) {
-      e.preventDefault();
-      form.dispatchEvent(new Event("submit"));
-    }
+    e.preventDefault();
+    form.requestSubmit();
   }
 });
 form.addEventListener('submit', async (e) => {
@@ -146,3 +144,8 @@ form.addEventListener('submit', async (e) => {
   loadComments();
 });
 loadComments();
+document.querySelector('.flip-card-home')
+  .addEventListener('click', function () {
+    this.querySelector('.flip-inner-home')
+      .classList.toggle('flip-active');
+  });
