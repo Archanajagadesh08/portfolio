@@ -40,7 +40,7 @@ window.addEventListener("scroll", () => {
 const form = document.getElementById('contactForm');
 const commentBoxes = document.getElementById('commentBoxes');
 
-const API = "http://localhost:5000";
+const API = "https://archana-portfolio-ezun.onrender.com";//backend URL
 
 // LOAD COMMENTS
 async function loadComments() {
