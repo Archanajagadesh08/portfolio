@@ -53,6 +53,11 @@ app.post('/comment', async (req, res) => {
 
     const newComment = new Comment({ name, message });
     await newComment.save();
+    // 📥 Get all comments
+app.get('/comments', async (req, res) => {
+  const data = await Comment.find();
+  res.json(data);
+});
 
     // 📩 SEND EMAIL
     await transporter.sendMail({
