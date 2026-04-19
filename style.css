@@ -448,103 +448,386 @@ nav ul li a.active::after {
 .about-card {
   line-height: 1.6;
 }
-/* Contact Section */
+/* ===== CONTACT SECTION ===== */
 #contact {
   background: #29525b;
   text-align: center;
 }
 
+html {
+  scroll-behavior: smooth;
+}
+
+.contact-section {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 60px 20px;
+}
+
+.contact-section h2 {
+  font-size: 28px;
+  font-weight: 700;
+  color: #fff;
+  margin-bottom: 30px;
+}
+
+/* ===== CONTACT CARDS ===== */
 .contact-subtext {
   margin-bottom: 30px;
   opacity: 0.8;
 }
 
-/* Container */
 .contact-container {
   display: flex;
   justify-content: center;
   flex-wrap: wrap;
-  gap: 25px;
+  gap: 20px;
   margin-bottom: 40px;
 }
 
-/* Cards */
 .contact-card {
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.1);
+  width: 280px;
   padding: 20px;
   border-radius: 15px;
-  width: 260px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  background: rgba(255, 255, 255, 0.08);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(255, 255, 255, 0.1);
+  text-align: center;
   transition: 0.4s;
 }
 
 .contact-card:hover {
   transform: translateY(-10px) scale(1.03);
-  background: rgba(255,255,255,0.12);
+  background: rgba(255, 255, 255, 0.12);
+}
+
+.contact-card .icon {
+  width: 28px;
+  height: 28px;
 }
 
 .contact-card a {
-  display: block;
-  margin-top: 10px;
   color: #a8e6cf;
   text-decoration: none;
   font-size: 0.9rem;
+  white-space: nowrap;
 }
 
 .contact-card a:hover {
   text-decoration: underline;
 }
 
-/* Icons */
-.icon {
-  width: 30px;
-  height: 30px;
+.connect-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(111, 231, 255, 0.6);
 }
 
-/* Comment Section */
-.comments-section {
-  background: rgba(255,255,255,0.05);
-  padding: 25px;
-  border-radius: 15px;
-  max-width: 500px;
-  margin: auto;
+/* ===== FORM BOX ===== */
+.contact-form {
+  display: flex;
+  flex-direction: column;
+  width: 500px;
+  max-width: 90%;
+  background: rgba(255, 255, 255, 0.08);
+  padding: 30px;
+  border-radius: 18px;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
 }
 
-.comments-section input,
-.comments-section textarea {
+/* ===== INPUT FIELDS ===== */
+.contact-form input,
+.contact-form textarea {
   width: 100%;
-  margin: 10px 0;
-  padding: 10px;
-  border-radius: 8px;
+  margin-bottom: 15px;
+  padding: 15px;
+  border-radius: 12px;
   border: none;
   outline: none;
+  background: rgba(255, 255, 255, 0.85);
+  font-size: 14px;
+  color: #000;
+  box-sizing: border-box;
+  font-family: inherit;
 }
 
-.comments-section button {
+.contact-form textarea {
+  height: 140px;
+  resize: none;
+}
+
+/* ===== SEND BUTTON ===== */
+.send-btn {
+  align-self: center;
+  padding: 12px 40px;
+  border-radius: 30px;
+  border: none;
+  background: linear-gradient(135deg, #a8e6cf, #7fd8be);
+  color: #000;
+  font-weight: 600;
+  font-size: 15px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+.send-btn:hover {
+  transform: scale(1.05);
+  box-shadow: 0 0 20px rgba(168, 230, 207, 0.5);
+}
+
+/* ===== COMMENTS CONTAINER ===== */
+.comments-container {
+  margin-top: 30px;
+  width: 500px;
+  max-width: 90%;
+}
+
+/* ===== COMMENT CARD ===== */
+.comment {
+  padding: 20px;
+  border-radius: 18px;
+  margin-bottom: 20px;
+  backdrop-filter: blur(15px);
+  -webkit-backdrop-filter: blur(15px);
+  background: rgba(255, 255, 255, 0.08);
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
+}
+
+/* RESET any generic .comment input/button rules */
+.comment input,
+.comment button {
+  all: unset;
+}
+
+/* ===== COMMENT HEADER ===== */
+.comment-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 10px;
+}
+
+.avatar {
+  width: 42px;
+  height: 42px;
+  border-radius: 50%;
   background: #a8e6cf;
   color: #000;
-  padding: 10px 20px;
-  border-radius: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-weight: bold;
+  font-size: 16px;
+  flex-shrink: 0;
+}
+
+.name {
+  font-weight: 600;
+  color: #fff;
+  font-size: 15px;
+}
+
+/* ===== COMMENT BODY ===== */
+.comment-body {
+  margin: 8px 0 12px 0;
+  color: #e0e0e0;
+  font-size: 14px;
+  line-height: 1.6;
+  padding-left: 4px;
+}
+
+/* ===== EDIT OVERLAY ===== */
+.edit-overlay {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  margin-bottom: 12px;
+}
+
+.edit-overlay textarea {
+  width: 100%;
+  padding: 10px 14px;
+  border-radius: 12px;
+  border: 1px solid #a8e6cf;
+  background: rgba(255, 255, 255, 0.07);
+  color: #fff;
+  font-size: 13px;
+  font-family: inherit;
+  resize: none;
+  outline: none;
+  box-sizing: border-box;
+}
+
+.edit-actions {
+  display: flex;
+  gap: 8px;
+}
+
+.save-btn {
+  flex: 1;
+  background: linear-gradient(135deg, #a8e6cf, #7fd8be);
+  color: #1a1a1a;
   border: none;
-  cursor: pointer;
-}
-
-.comments-section button:hover {
-  opacity: 0.8;
-}
-
-/* Comment Boxes */
-.comment-boxes {
-  max-width: 500px;
-  margin: 20px auto;
-}
-
-.comment {
-  background: rgba(255,255,255,0.08);
   padding: 10px;
-  border-radius: 10px;
-  margin-bottom: 10px;
+  border-radius: 25px;
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  font-family: inherit;
+  transition: 0.3s;
+  text-align: center;
+}
+
+.save-btn:hover {
+  opacity: 0.85;
+}
+
+.cancel-btn {
+  flex: 1;
+  background: rgba(255, 255, 255, 0.07);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  color: rgba(255, 255, 255, 0.7);
+  padding: 10px;
+  border-radius: 25px;
+  font-size: 13px;
+  cursor: pointer;
+  font-family: inherit;
+  transition: 0.3s;
+  text-align: center;
+}
+
+.cancel-btn:hover {
+  background: rgba(255, 255, 255, 0.12);
+}
+
+/* ===== REPLIES ===== */
+.replies {
+  margin-bottom: 8px;
+}
+
+.reply-item {
+  display: flex;
+  gap: 10px;
+  margin-top: 10px;
+  align-items: flex-start;
+}
+
+.reply-avatar {
+  width: 28px;
+  height: 28px;
+  border-radius: 50%;
+  background: #6fe7ff;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 12px;
+  font-weight: bold;
+  color: #000;
+  flex-shrink: 0;
+}
+
+.reply-item > div {
+  display: flex;
+  flex-direction: column;
+}
+
+.reply-item b {
+  font-size: 12px;
+  color: #a8e6cf;
+}
+
+.reply-item p {
+  margin: 2px 0 0;
+  font-size: 13px;
+  color: #ddd;
+}
+
+/* ===== REPLY INPUT BOX ===== */
+.reply-box {
+  display: flex;
+  align-items: center;
+  background: rgba(255, 255, 255, 0.12);
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  border-radius: 50px;
+  padding: 4px 4px 4px 14px;
+  margin-top: 12px;
+  gap: 6px;
+  box-sizing: border-box;
+}
+
+.reply-box input {
+  all: unset;
+  flex: 1;
+  padding: 9px 4px;
+  font-size: 13px;
+  color: #fff;
+  min-width: 0;
+  font-family: inherit;
+  background: transparent;
+}
+
+.reply-box input::placeholder {
+  color: rgba(255, 255, 255, 0.45);
+}
+
+.reply-box button {
+  all: unset;
+  padding: 9px 22px;
+  border-radius: 50px;
+  background: linear-gradient(135deg, #a8e6cf, #7fd8be);
+  color: #1a1a1a;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 600;
+  white-space: nowrap;
+  flex-shrink: 0;
+  font-family: inherit;
+  transition: opacity 0.3s;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.reply-box button:hover {
+  opacity: 0.85;
+}
+
+/* ===== ACTION BUTTONS (Edit + Delete) ===== */
+.action-buttons {
+  display: flex;
+  gap: 8px;
+  margin-top: 12px;
+}
+
+.action-buttons button {
+  all: unset;
+  flex: 1;
+  padding: 11px 10px;
+  border-radius: 30px;
+  background: #1e2a4a;
+  color: #8fffd6;
+  cursor: pointer;
+  font-size: 13px;
+  font-family: inherit;
+  font-weight: 500;
+  transition: 0.3s;
+  text-align: center;
+  box-sizing: border-box;
+}
+
+.action-buttons button:hover {
+  background: #27345c;
+}
+
+.action-buttons button.del:hover {
+  background: rgba(226, 75, 74, 0.2);
+  color: #f09595;
 }
 /* Flip Card Home */
 .flip-card-home {
@@ -599,69 +882,6 @@ nav ul li a.active::after {
   font-weight: 600;
   transition: 0.3s;
   text-align: center;
-}
-/* Reply input + button layout */
-.comment input {
-  width: 100%;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-  margin-top: 10px;
-}
-
-/* Reply button */
-.comment button {
-  width: 100%;
-  margin-top: 10px;
-  padding: 10px;
-  border-radius: 20px;
-  border: none;
-  background: #1c2c5b;
-  color: #6fe7ff;
-  cursor: pointer;
-}
-.reply-box {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-}
-
-.reply-box input {
-  flex: 1;
-  padding: 10px;
-  border-radius: 8px;
-  border: none;
-}
-
-.reply-box button {
-  padding: 10px 15px;
-  border-radius: 20px;
-  border: none;
-  background: #1c2c5b;
-  color: #6fe7ff;
-}
-.connect-btn:hover {
-  transform: scale(1.05);
-  box-shadow: 0 0 20px rgba(111,231,255,0.6);
-}
-html {
-  scroll-behavior: smooth;
-}
-.action-buttons {
-  display: flex;
-  gap: 10px;
-  margin-top: 10px;
-  flex-wrap: wrap;
-}
-
-.action-buttons button {
-  flex: 1;
-  padding: 10px;
-  border-radius: 20px;
-  border: none;
-  background: #1c2c5b;
-  color: #6fe7ff;
-  cursor: pointer;
 }
 /* --- ULTIMATE RESPONSIVE PATCH --- */
 
@@ -748,6 +968,7 @@ html {
   }
 }
 
+
 /* For Extra Small Screens (iPhone SE, etc) */
 @media (max-width: 380px) {
   nav ul {
@@ -764,50 +985,23 @@ html {
 }
 .flip-inner-home.flip-active {
   transform: rotateY(180deg);
+}/* For Extra Small Screens (iPhone SE, etc) */
+@media (max-width: 380px) {
+  nav ul {
+    gap: 8px;
+  }
+  
+  nav ul li a {
+    font-size: 12px;
+  }
+
+  .text h1 {
+    font-size: 1.6rem;
+  }
 }
-/* ===== FINAL CONTACT FIX ===== */
-
-.contact-container {
-  display: flex;
-  justify-content: center;
-  flex-wrap: wrap;
-  gap: 20px;
+.flip-inner-home.flip-active {
+  transform: rotateY(180deg);
 }
-
-.contact-card {
-  width: 280px;
-  padding: 20px;
-  border-radius: 15px;
-
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 10px;
-
-  background: rgba(255,255,255,0.08);
-  backdrop-filter: blur(12px);
-  border: 1px solid rgba(255,255,255,0.1);
-
-  text-align: center;
-}
-
-.contact-card .icon {
-  width: 28px;
-  height: 28px;
-}
-
-.contact-card a {
-  color: #a8e6cf;
-  text-decoration: none;
-  font-size: 0.9rem;
-
-  white-space: nowrap; /* keeps email in one line */
-}
-
-.contact-card a:hover {
-  text-decoration: underline;
-}
-
 /* MOBILE */
 @media (max-width: 600px) {
   .contact-card {

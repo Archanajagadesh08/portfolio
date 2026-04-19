@@ -220,21 +220,16 @@
 
 
   <!-- Comment Form -->
-  <div class="comments-section fade-up">
-    <h2>Leave a Message </h2>
+  <section class="contact-section">
+  <h2>Leave a Message</h2>
 
-    <form id="contactForm">
-      <input type="text" placeholder="Your Name" required>
-      <textarea rows="4" placeholder="Your Message" required></textarea>
-      <button type="submit">Send</button>
-    </form>
-      
-    <p id="responseMessage"></p>
-  </div>
+  <form id="contactForm" class="contact-form">
+    <input type="text" id="nameInput" placeholder="Your Name" required>
+    <textarea id="msgInput" placeholder="Your Message" required></textarea>
+    <button type="submit" class="send-btn">Send</button>
+  </form>
 
-  <!-- Comments Display -->
-  <div class="comment-boxes fade-up" id="commentBoxes"></div>
-  
+  <div id="commentBoxes" class="comments-container"></div>
 </section>
  <script src="script.js"></script>
 

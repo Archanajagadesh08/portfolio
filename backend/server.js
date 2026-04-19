@@ -1,140 +1,190 @@
-const express = require('express');
-const mongoose = require('mongoose');
-const cors = require('cors');
-const nodemailer = require("nodemailer");
+// ===== DEBUG =====
+console.log("JS WORKING");
 
-const app = express();
-app.use(cors({
-  origin: "*"
-}));
-app.use(express.json());
+// ===== SCROLL ANIMATION =====
+const sections = document.querySelectorAll('section');
 
-/* ================= EMAIL SETUP ================= */
-const transporter = nodemailer.createTransport({
-  service: "gmail",
-  auth: {
-    user: "achubooks6@gmail.com",
-    pass: "dyopbhxlutuyapss" // ✅ REMOVE SPACES
-  }
-});
+const reveal = () => {
+  const trigger = window.innerHeight * 0.85;
 
-// 🔍 CHECK IF EMAIL CONFIG WORKS
-transporter.verify((err, success) => {
-  if (err) {
-    console.log("❌ MAIL ERROR:", err);
-  } else {
-    console.log("✅ MAIL READY");
-  }
-});
+  sections.forEach(sec => {
+    const top = sec.getBoundingClientRect().top;
+    if (top < trigger) sec.classList.add('show');
+  });
+};
 
-/* ================= DATABASE ================= */
-mongoose.connect('mongodb+srv://archanajagadesh08_db_user:eMkiiWwutEJ5Df7n@archana.cfpdggh.mongodb.net/?appName=Archana')
-  .then(() => console.log("DB connected"))
-  .catch(err => console.log(err));
+window.addEventListener('scroll', reveal);
+reveal();
 
-/* ================= SCHEMA ================= */
-const commentSchema = new mongoose.Schema({
-  name: String,
-  message: String,
-  replies: [
-    {
-      name: String,
-      message: String
+// ===== NAV ACTIVE LINK =====
+const allSections = document.querySelectorAll("section");
+const navLinks = document.querySelectorAll(".nav-link");
+
+window.addEventListener("scroll", () => {
+  let current = "";
+
+  allSections.forEach((section) => {
+    const sectionTop = section.offsetTop - 120;
+    const sectionHeight = section.clientHeight;
+
+    if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
+      current = section.getAttribute("id");
     }
-  ]
+  });
+
+  navLinks.forEach((link) => {
+    link.classList.remove("active");
+    if (link.getAttribute("href") === "#" + current) {
+      link.classList.add("active");
+    }
+  });
 });
 
-const Comment = mongoose.model('Comment', commentSchema);
+// ===== CONFIG =====
+const form = document.getElementById('contactForm');
+const commentBoxes = document.getElementById('commentBoxes');
 
-/* ================= ADD COMMENT ================= */
-app.post('/comment', async (req, res) => {
+const API = "https://archana-portfolio-ezun.onrender.com";
+
+// 👉 CHANGE THIS (owner name)
+const OWNER_NAME = "Archana";
+
+// ===== LOAD COMMENTS =====
+async function loadComments() {
   try {
-    const { name, message } = req.body;
+    const res = await fetch(`${API}/comments`);
+    const data = await res.json();
 
-    const newComment = new Comment({ name, message });
-    await newComment.save();
+    commentBoxes.innerHTML = data.map(c => `
+      <div class="comment">
 
+        <!-- HEADER -->
+        <div class="comment-header">
+          <div class="avatar">${c.name.charAt(0).toUpperCase()}</div>
+          <div class="meta">
+            <div class="name">${c.name}</div>
+          </div>
+        </div>
 
-    // 📩 SEND EMAIL
-    await transporter.sendMail({
-      from: "achubooks6@gmail.com",
-      to: "achubooks6@gmail.com",
-      subject: "New Comment 💬",
-      text: `New comment from ${name}\n\n${message}`
+        <!-- MESSAGE -->
+        <div class="comment-body">${c.message}</div>
+
+        <!-- REPLIES -->
+        <div class="replies">
+          ${(c.replies || []).map(r => `
+            <div class="reply-item">
+              <div class="reply-avatar">${r.name.charAt(0).toUpperCase()}</div>
+              <div>
+                <b>${r.name}</b>
+                <p>${r.message}</p>
+              </div>
+            </div>
+          `).join('')}
+        </div>
+
+        <!-- REPLY BOX -->
+        <div class="reply-box">
+          <input 
+            placeholder="Reply..." 
+            id="reply-${c._id}"
+            onkeydown="if(event.key==='Enter'){addReply('${c._id}')}"
+          >
+          <button onclick="addReply('${c._id}')">Reply</button>
+        </div>
+
+        <!-- DELETE BUTTON -->
+        <div class="action-buttons">
+          ${
+            c.name === OWNER_NAME
+              ? `<button onclick="deleteComment('${c._id}')">Delete</button>`
+              : ""
+          }
+        </div>
+
+      </div>
+    `).join('');
+
+  } catch (err) {
+    console.error("Error loading comments:", err);
+  }
+}
+
+// ===== DELETE COMMENT =====
+window.deleteComment = async function(id) {
+  try {
+    await fetch(`${API}/comment/${id}`, {
+      method: "DELETE"
     });
 
-    console.log("✅ EMAIL SENT");
+    loadComments();
+  } catch (err) {
+    console.error("Delete error:", err);
+  }
+};
 
-    res.send("Comment saved + Email sent");
+// ===== ADD REPLY =====
+window.addReply = async function(id) {
+  const input = document.getElementById(`reply-${id}`);
+  const message = input.value.trim();
 
-  } catch (error) {
-    console.log("❌ EMAIL ERROR:", error);
-    res.send("Comment saved but email failed");
-  }
-});
-// 📥 GET ALL COMMENTS (VERY IMPORTANT)
-app.get('/comments', async (req, res) => {
-  try {
-    const data = await Comment.find();
-    res.json(data);
-  } catch (err) {
-    console.log("❌ FETCH ERROR:", err);
-    res.status(500).send("Error fetching comments");
-  }
-});
-// 💬 Add reply
-app.post('/reply/:id', async (req, res) => {
-  try {
-    const comment = await Comment.findById(req.params.id);
-    comment.replies.push(req.body);
-    await comment.save();
-    res.send("Reply added");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Reply failed");
-  }
-});
-// ❌ Delete comment
-app.delete('/comment/:id', async (req, res) => {
-  try {
-    await Comment.findByIdAndDelete(req.params.id);
-    res.send("Comment deleted");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Delete failed");
-  }
-});
-// ✏️ Edit comment
-app.put('/comment/:id', async (req, res) => {
-  try {
-    await Comment.findByIdAndUpdate(req.params.id, {
-      message: req.body.message
-    });
-    res.send("Comment updated");
-  } catch (err) {
-    console.log(err);
-    res.status(500).send("Update failed");
-  }
-});
+  if (!message) return;
 
-/* ================= TEST EMAIL ================= */
-app.get('/testmail', async (req, res) => {
   try {
-    await transporter.sendMail({
-      from: "achubooks6@gmail.com",
-      to: "achubooks6@gmail.com",
-      subject: "Test Email 💌",
-      text: "If you see this, email works!"
+    await fetch(`${API}/reply/${id}`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        name: OWNER_NAME, // you can change dynamically later
+        message
+      })
     });
 
-    console.log("✅ TEST EMAIL SENT");
-    res.send("Email sent");
+    input.value = "";
+    loadComments();
 
   } catch (err) {
-    console.log("❌ TEST EMAIL ERROR:", err);
-    res.send("Error sending email");
+    console.error("Reply error:", err);
+  }
+};
+
+// ===== ENTER KEY (FORM SUBMIT FIX) =====
+form.addEventListener("keydown", function(e) {
+  if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
+    e.preventDefault();
+    form.dispatchEvent(new Event("submit"));
   }
 });
 
-/* ================= START SERVER ================= */
-app.listen(5000, () => console.log("Server running on port 5000"));
+// ===== SUBMIT COMMENT =====
+form.addEventListener('submit', async (e) => {
+  e.preventDefault();
+
+  const name = document.getElementById("nameInput").value.trim();
+  const message = document.getElementById("msgInput").value.trim();
+
+  if (!name || !message) return;
+
+  try {
+    await fetch(`${API}/comment`, {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({ name, message })
+    });
+
+    form.reset();
+    loadComments();
+
+  } catch (err) {
+    console.error("Submit error:", err);
+  }
+});
+
+// ===== INITIAL LOAD =====
+loadComments();
+
+// ===== FLIP CARD (UNCHANGED) =====
+document.querySelector('.flip-card-home')
+  ?.addEventListener('click', function () {
+    this.querySelector('.flip-inner-home')
+      .classList.toggle('flip-active');
+  });
