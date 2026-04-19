@@ -11,8 +11,8 @@ app.use(express.json());
 const transporter = nodemailer.createTransport({
   service: "gmail",
   auth: {
-    user: "archanajagadesh08@gmail.com",
-    pass: "mgkxdmkygfcjgkwb" // ✅ REMOVE SPACES
+    user: "achubooks6@gmail.com",
+    pass: "dyopbhxlutuyapss" // ✅ REMOVE SPACES
   }
 });
 
@@ -54,8 +54,8 @@ app.post('/comment', async (req, res) => {
 
     // 📩 SEND EMAIL
     await transporter.sendMail({
-      from: "archanajagadesh08@gmail.com",
-      to: "archanajagadesh08@gmail.com",
+      from: "achubooks6@gmail.com",
+      to: "achubooks6@gmail.com",
       subject: "New Comment 💬",
       text: `New comment from ${name}\n\n${message}`
     });
@@ -118,8 +118,8 @@ app.put('/comment/:id', async (req, res) => {
 app.get('/testmail', async (req, res) => {
   try {
     await transporter.sendMail({
-      from: "archanajagadesh08@gmail.com",
-      to: "archanajagadesh08@gmail.com",
+      from: "achubooks6@gmail.com",
+      to: "achubooks6@gmail.com",
       subject: "Test Email 💌",
       text: "If you see this, email works!"
     });
