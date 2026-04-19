@@ -4,7 +4,9 @@ const cors = require('cors');
 const nodemailer = require("nodemailer");
 
 const app = express();
-app.use(cors());
+app.use(cors({
+  origin: "*"
+}));
 app.use(express.json());
 
 /* ================= EMAIL SETUP ================= */
