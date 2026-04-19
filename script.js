@@ -79,10 +79,12 @@ async function loadComments() {
 
 // DELETE
 window.deleteComment = async function(id) {
-  await fetch(`${API}/comment/${id}`, { method: "DELETE" });
+  await fetch(`${API}/comment/${id}`, {
+    method: "DELETE"
+  });
+
   loadComments();
 }
-
 // SHOW EDIT
 window.showEdit = function(id) {
   document.getElementById(`edit-${id}`).style.display = "block";
