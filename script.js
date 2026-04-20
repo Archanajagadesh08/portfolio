@@ -42,60 +42,79 @@ async function loadComments() {
   try {
     const res = await fetch(`${API}/comments`);
     const data = await res.json();
+    const currentUser = sessionStorage.getItem("userName") || "";
+    const isOwner = currentUser === "Archana";
 
-    commentBoxes.innerHTML = data.map(c => `
-      <div class="comment" id="card-${c._id}">
+    commentBoxes.innerHTML = data.map(c => {
+      const isMyComment = currentUser && currentUser === c.name;
 
-        <div class="comment-header">
-          <div class="avatar">${c.name.charAt(0).toUpperCase()}</div>
-          <div class="name">${c.name}</div>
-        </div>
-
-        <div class="comment-body" id="msg-${c._id}">${c.message}</div>
-
-        <div class="edit-overlay" id="edit-overlay-${c._id}">
-          <textarea id="edit-${c._id}" rows="2">${c.message}</textarea>
-          <div class="edit-actions">
-            <button class="save-btn" onclick="saveEdit('${c._id}')">Save</button>
-            <button class="cancel-btn" onclick="cancelEdit('${c._id}')">Cancel</button>
-          </div>
-        </div>
-
-        <div class="replies" id="replies-${c._id}">
-          ${c.replies && c.replies.length ? c.replies.map(r => `
-            <div class="reply-item">
-              <div class="reply-avatar">${r.name.charAt(0).toUpperCase()}</div>
-              <div>
-                <b>${r.name}</b>
-                <p>${r.message}</p>
-              </div>
-            </div>
-          `).join('') : ''}
-        </div>
-
-        <div class="reply-box">
-  <input
-    type="text"
-    placeholder="Reply..."
-    id="reply-${c._id}"
-    onkeydown="if(event.key==='Enter'){event.preventDefault();addReply('${c._id}');}"
-  />
-  <button onclick="addReply('${c._id}')">Reply</button>
-</div>
-
+      // Action buttons: owner sees delete on all, user sees edit+delete only on own
+      const actionButtons = (isMyComment || isOwner) ? `
         <div class="action-buttons">
-          <button onclick="showEdit('${c._id}')">Edit</button>
-          <button class="del" onclick="deleteComment('${c._id}')">Delete</button>
-        </div>
+          ${isMyComment ? `<button onclick="showEdit('${c._id}')">Edit</button>` : ''}
+          ${(isMyComment || isOwner) ? `<button class="del" onclick="deleteComment('${c._id}')">Delete</button>` : ''}
+        </div>` : '';
 
-      </div>
-    `).join('');
+      return `
+        <div class="comment" id="card-${c._id}">
+
+          <div class="comment-header">
+            <div class="avatar">${c.name.charAt(0).toUpperCase()}</div>
+            <div class="name">${c.name}</div>
+          </div>
+
+          <div class="comment-body" id="msg-${c._id}">${c.message}</div>
+
+          <div class="edit-overlay" id="edit-overlay-${c._id}">
+            <textarea id="edit-${c._id}" rows="2">${c.message}</textarea>
+            <div class="edit-actions">
+              <button class="save-btn" onclick="saveEdit('${c._id}')">Save</button>
+              <button class="cancel-btn" onclick="cancelEdit('${c._id}')">Cancel</button>
+            </div>
+          </div>
+
+          <div class="replies" id="replies-${c._id}">
+            ${c.replies && c.replies.length ? c.replies.map((r, i) => `
+              <div class="reply-item">
+                <div class="reply-avatar">${r.name.charAt(0).toUpperCase()}</div>
+                <div style="flex:1">
+                  <b>${r.name}</b>
+                  <p id="reply-msg-${c._id}-${i}">${r.message}</p>
+                  ${isOwner && r.name === "Archana" ? `
+                    <div class="edit-overlay" id="reply-edit-overlay-${c._id}-${i}" style="margin-top:6px;">
+                      <textarea id="reply-edit-${c._id}-${i}" rows="2">${r.message}</textarea>
+                      <div class="edit-actions">
+                        <button class="save-btn" onclick="saveReplyEdit('${c._id}', ${i})">Save</button>
+                        <button class="cancel-btn" onclick="cancelReplyEdit('${c._id}', ${i})">Cancel</button>
+                      </div>
+                    </div>
+                    <button style="all:unset;font-size:11px;color:#a8e6cf;cursor:pointer;margin-top:4px;" onclick="showReplyEdit('${c._id}', ${i})">Edit reply</button>
+                  ` : ''}
+                </div>
+              </div>
+            `).join('') : ''}
+          </div>
+
+          <div class="reply-box">
+            <input
+              type="text"
+              placeholder="Reply..."
+              id="reply-${c._id}"
+              onkeydown="if(event.key==='Enter'){event.preventDefault();addReply('${c._id}');}"
+            />
+            <button onclick="addReply('${c._id}')">Reply</button>
+          </div>
+
+          ${actionButtons}
+
+        </div>
+      `;
+    }).join('');
 
   } catch (err) {
     console.error("Failed to load comments:", err);
   }
 }
-
 // ─── DELETE ──────────────────────────────────────────────────────
 window.deleteComment = async function(id) {
   await fetch(`${API}/comment/${id}`, { method: "DELETE" });
@@ -129,19 +148,23 @@ window.saveEdit = async function(id) {
 };
 
 // ─── REPLY ───────────────────────────────────────────────────────
-window.addReply = async function(id) {
-  const input = document.getElementById(`reply-${id}`);
-  const message = input.value.trim();
-  if (!message) return;
+// ─── REPLY EDIT ──────────────────────────────────────────────────
+window.showReplyEdit = function(commentId, index) {
+  document.getElementById(`reply-edit-overlay-${commentId}-${index}`).style.display = "flex";
+};
 
-  const storedName = sessionStorage.getItem("userName") || "Archana";
+window.cancelReplyEdit = function(commentId, index) {
+  document.getElementById(`reply-edit-overlay-${commentId}-${index}`).style.display = "none";
+};
 
-  await fetch(`${API}/reply/${id}`, {
-    method: "POST",
+window.saveReplyEdit = async function(commentId, index) {
+  const newText = document.getElementById(`reply-edit-${commentId}-${index}`).value.trim();
+  if (!newText) return;
+  await fetch(`${API}/reply/${commentId}/${index}`, {
+    method: "PUT",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: storedName, message })
+    body: JSON.stringify({ message: newText })
   });
-  input.value = "";
   loadComments();
 };
 // ─── FORM SUBMIT ─────────────────────────────────────────────────
