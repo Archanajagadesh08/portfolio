@@ -221,7 +221,8 @@
 <div class="contact-section">
   <h2>Leave a Message</h2>
   <form id="contactForm" class="contact-form">
-    <input type="text" id="nameInput" placeholder="Your Name" required>
+    <input type="text" id="nameInput" placeholder="Your Name" 
+  oninput="sessionStorage.setItem('userName', this.value)" required>
     <textarea id="msgInput" placeholder="Your Message" required></textarea>
     <button type="submit" class="send-btn">Send</button>
   </form>

@@ -158,19 +158,19 @@ window.saveEdit = async function(id) {
 window.addReply = async function(id) {
   const input = document.getElementById(`reply-${id}`);
   const message = input.value.trim();
-
   if (!message) return;
+
+  const storedName = sessionStorage.getItem("userName") || "Archana"; // ← fix this line
 
   await fetch(`${API}/reply/${id}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: "Archana", message })
+    body: JSON.stringify({ name: storedName, message })
   });
 
   input.value = "";
   loadComments();
 };
-
 // ─── REPLY EDIT ──────────────────────────────────────────────────
 window.showReplyEdit = function(commentId, index) {
   document.getElementById(`reply-edit-overlay-${commentId}-${index}`).style.display = "flex";
