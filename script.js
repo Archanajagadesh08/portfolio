@@ -15,15 +15,19 @@ reveal();
 // ─── ACTIVE NAV LINK ─────────────────────────────────────────────
 const allSections = document.querySelectorAll("section[id]");
 const navLinks = document.querySelectorAll(".nav-link");
+
 window.addEventListener("scroll", () => {
   let current = "";
+
   allSections.forEach((section) => {
     const sectionTop = section.offsetTop - 120;
     const sectionHeight = section.clientHeight;
+
     if (scrollY >= sectionTop && scrollY < sectionTop + sectionHeight) {
       current = section.getAttribute("id");
     }
   });
+
   navLinks.forEach((link) => {
     link.classList.remove("active");
     if (link.getAttribute("href") === "#" + current) {
@@ -42,17 +46,18 @@ async function loadComments() {
   try {
     const res = await fetch(`${API}/comments`);
     const data = await res.json();
+
     const currentUser = sessionStorage.getItem("userName") || "";
     const isOwner = currentUser === "Archana";
 
     commentBoxes.innerHTML = data.map(c => {
       const isMyComment = currentUser && currentUser === c.name;
+      const replies = c.replies || []; // ✅ FIX
 
-      // Action buttons: owner sees delete on all, user sees edit+delete only on own
       const actionButtons = (isMyComment || isOwner) ? `
         <div class="action-buttons">
           ${isMyComment ? `<button onclick="showEdit('${c._id}')">Edit</button>` : ''}
-          ${(isMyComment || isOwner) ? `<button class="del" onclick="deleteComment('${c._id}')">Delete</button>` : ''}
+          <button class="del" onclick="deleteComment('${c._id}')">Delete</button>
         </div>` : '';
 
       return `
@@ -65,7 +70,7 @@ async function loadComments() {
 
           <div class="comment-body" id="msg-${c._id}">${c.message}</div>
 
-          <div class="edit-overlay" id="edit-overlay-${c._id}">
+          <div class="edit-overlay" id="edit-overlay-${c._id}" style="display:none;">
             <textarea id="edit-${c._id}" rows="2">${c.message}</textarea>
             <div class="edit-actions">
               <button class="save-btn" onclick="saveEdit('${c._id}')">Save</button>
@@ -74,14 +79,15 @@ async function loadComments() {
           </div>
 
           <div class="replies" id="replies-${c._id}">
-            ${c.replies && c.replies.length ? c.replies.map((r, i) => `
+            ${replies.map((r, i) => `
               <div class="reply-item">
                 <div class="reply-avatar">${r.name.charAt(0).toUpperCase()}</div>
                 <div style="flex:1">
                   <b>${r.name}</b>
                   <p id="reply-msg-${c._id}-${i}">${r.message}</p>
+
                   ${isOwner && r.name === "Archana" ? `
-                    <div class="edit-overlay" id="reply-edit-overlay-${c._id}-${i}" style="margin-top:6px;">
+                    <div class="edit-overlay" id="reply-edit-overlay-${c._id}-${i}" style="display:none;margin-top:6px;">
                       <textarea id="reply-edit-${c._id}-${i}" rows="2">${r.message}</textarea>
                       <div class="edit-actions">
                         <button class="save-btn" onclick="saveReplyEdit('${c._id}', ${i})">Save</button>
@@ -92,7 +98,7 @@ async function loadComments() {
                   ` : ''}
                 </div>
               </div>
-            `).join('') : ''}
+            `).join('')}
           </div>
 
           <div class="reply-box">
@@ -115,6 +121,7 @@ async function loadComments() {
     console.error("Failed to load comments:", err);
   }
 }
+
 // ─── DELETE ──────────────────────────────────────────────────────
 window.deleteComment = async function(id) {
   await fetch(`${API}/comment/${id}`, { method: "DELETE" });
@@ -124,9 +131,7 @@ window.deleteComment = async function(id) {
 // ─── SHOW EDIT ───────────────────────────────────────────────────
 window.showEdit = function(id) {
   document.getElementById(`msg-${id}`).style.display = "none";
-  const overlay = document.getElementById(`edit-overlay-${id}`);
-  overlay.style.display = "flex";
-  document.getElementById(`edit-${id}`).focus();
+  document.getElementById(`edit-overlay-${id}`).style.display = "flex";
 };
 
 // ─── CANCEL EDIT ─────────────────────────────────────────────────
@@ -139,15 +144,33 @@ window.cancelEdit = function(id) {
 window.saveEdit = async function(id) {
   const newText = document.getElementById(`edit-${id}`).value.trim();
   if (!newText) return;
+
   await fetch(`${API}/comment/${id}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: newText })
   });
+
   loadComments();
 };
 
-// ─── REPLY ───────────────────────────────────────────────────────
+// ─── REPLY ADD ───────────────────────────────────────────────────
+window.addReply = async function(id) {
+  const input = document.getElementById(`reply-${id}`);
+  const message = input.value.trim();
+
+  if (!message) return;
+
+  await fetch(`${API}/reply/${id}`, {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({ name: "Archana", message })
+  });
+
+  input.value = "";
+  loadComments();
+};
+
 // ─── REPLY EDIT ──────────────────────────────────────────────────
 window.showReplyEdit = function(commentId, index) {
   document.getElementById(`reply-edit-overlay-${commentId}-${index}`).style.display = "flex";
@@ -160,13 +183,16 @@ window.cancelReplyEdit = function(commentId, index) {
 window.saveReplyEdit = async function(commentId, index) {
   const newText = document.getElementById(`reply-edit-${commentId}-${index}`).value.trim();
   if (!newText) return;
+
   await fetch(`${API}/reply/${commentId}/${index}`, {
     method: "PUT",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ message: newText })
   });
+
   loadComments();
 };
+
 // ─── FORM SUBMIT ─────────────────────────────────────────────────
 form.addEventListener("keydown", function(e) {
   if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
@@ -177,23 +203,27 @@ form.addEventListener("keydown", function(e) {
 
 form.addEventListener('submit', async (e) => {
   e.preventDefault();
+
   const name = document.getElementById("nameInput").value.trim();
   const message = document.getElementById("msgInput").value.trim();
+
   if (!name || !message) return;
 
-  sessionStorage.setItem("userName", name); // ← save their name
+  sessionStorage.setItem("userName", name);
 
   await fetch(`${API}/comment`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
     body: JSON.stringify({ name, message })
   });
+
   form.reset();
   loadComments();
 });
+
 // ─── FLIP CARD ───────────────────────────────────────────────────
 document.querySelector('.flip-card-home')
-  .addEventListener('click', function () {
+  ?.addEventListener('click', function () {
     this.querySelector('.flip-inner-home')
       .classList.toggle('flip-active');
   });
