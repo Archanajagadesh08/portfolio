@@ -48,7 +48,7 @@ async function loadComments() {
     const data = await res.json();
 
     const currentUser = sessionStorage.getItem("userName") || "";
-    const isOwner = currentUser === "Archana";
+const isOwner = sessionStorage.getItem("isOwner") === "true";
 
     commentBoxes.innerHTML = data.map(c => {
       const isMyComment = currentUser && currentUser === c.name;
@@ -230,3 +230,21 @@ document.querySelector('.flip-card-home')
 
 // ─── INIT ────────────────────────────────────────────────────────
 loadComments();
+// Add this function to your JS
+window.ownerLogin = function() {
+  const pass = prompt("Enter owner password:");
+  if (pass === "Achu1708") { // change this to any password you want
+    sessionStorage.setItem("isOwner", "true");
+    sessionStorage.setItem("userName", "Archana");
+    loadComments();
+    alert("Logged in as owner!");
+  } else {
+    alert("Wrong password");
+  }
+};
+// ─── OWNER LOGIN TRIGGER ─────────────────────────────────────────
+window.addEventListener('keydown', (e) => {
+  if (e.ctrlKey && e.shiftKey && e.key === 'A') {
+    ownerLogin();
+  }
+});

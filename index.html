@@ -221,14 +221,16 @@
 <div class="contact-section">
   <h2>Leave a Message</h2>
   <form id="contactForm" class="contact-form">
-    <input type="text" id="nameInput" placeholder="Your Name" 
-  oninput="sessionStorage.setItem('userName', this.value)" required>
+    <input type="text" id="nameInput" placeholder="Your Name" required
+  oninput="sessionStorage.setItem('userName', this.value.trim())">
     <textarea id="msgInput" placeholder="Your Message" required></textarea>
     <button type="submit" class="send-btn">Send</button>
   </form>
   <div id="commentBoxes" class="comments-container"></div>
 </div>
  <script src="script.js"></script>
-
+<!-- Hidden owner login - only you know this exists -->
+<span onclick="ownerLogin()" style="position:fixed;bottom:10px;left:10px;
+  width:20px;height:20px;cursor:pointer;opacity:0;z-index:9999;"></span>
 </body>
 </html>
