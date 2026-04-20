@@ -80,7 +80,7 @@ nav ul li a::after {
   bottom: -5px;
   width: 0%;
   height: 3px;
-  background: #000;
+  background: #fff; /* ← was #000, change to white */
   transition: width 0.3s ease;
 }
 
@@ -959,4 +959,11 @@ button {
 
   .action-buttons { gap: 6px; }
   .action-buttons button { font-size: 11px; padding: 8px 6px; }
+}
+#contact {
+  min-height: auto;
+  padding-bottom: 20px;
+}
+.contact-section {
+  padding: 20px 20px 60px 20px;
 }

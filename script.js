@@ -1,7 +1,7 @@
 console.log("JS WORKING");
 
 // ─── SCROLL REVEAL ───────────────────────────────────────────────
-const sections = document.querySelectorAll('section');
+const sections = document.querySelectorAll('section[id]');
 const reveal = () => {
   const trigger = window.innerHeight * 0.85;
   sections.forEach(sec => {
@@ -13,7 +13,7 @@ window.addEventListener('scroll', reveal);
 reveal();
 
 // ─── ACTIVE NAV LINK ─────────────────────────────────────────────
-const allSections = document.querySelectorAll("section");
+const allSections = document.querySelectorAll("section[id]");
 const navLinks = document.querySelectorAll(".nav-link");
 window.addEventListener("scroll", () => {
   let current = "";
@@ -74,14 +74,14 @@ async function loadComments() {
         </div>
 
         <div class="reply-box">
-          <input
-            type="text"
-            placeholder="Reply..."
-            id="reply-${c._id}"
-            onkeydown="if(event.key==='Enter'){ event.preventDefault(); addReply('${c._id}'); }"
-          />
-          <button onclick="addReply('${c._id}')">Reply</button>
-        </div>
+  <input
+    type="text"
+    placeholder="Reply..."
+    id="reply-${c._id}"
+    onkeydown="if(event.key==='Enter'){event.preventDefault();addReply('${c._id}');}"
+  />
+  <button onclick="addReply('${c._id}')">Reply</button>
+</div>
 
         <div class="action-buttons">
           <button onclick="showEdit('${c._id}')">Edit</button>
@@ -133,15 +133,17 @@ window.addReply = async function(id) {
   const input = document.getElementById(`reply-${id}`);
   const message = input.value.trim();
   if (!message) return;
+
+  const storedName = sessionStorage.getItem("userName") || "Archana";
+
   await fetch(`${API}/reply/${id}`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
-    body: JSON.stringify({ name: "Archana", message })
+    body: JSON.stringify({ name: storedName, message })
   });
   input.value = "";
   loadComments();
 };
-
 // ─── FORM SUBMIT ─────────────────────────────────────────────────
 form.addEventListener("keydown", function(e) {
   if (e.key === "Enter" && e.target.tagName !== "TEXTAREA") {
@@ -155,6 +157,9 @@ form.addEventListener('submit', async (e) => {
   const name = document.getElementById("nameInput").value.trim();
   const message = document.getElementById("msgInput").value.trim();
   if (!name || !message) return;
+
+  sessionStorage.setItem("userName", name); // ← save their name
+
   await fetch(`${API}/comment`, {
     method: "POST",
     headers: { "Content-Type": "application/json" },
@@ -163,7 +168,6 @@ form.addEventListener('submit', async (e) => {
   form.reset();
   loadComments();
 });
-
 // ─── FLIP CARD ───────────────────────────────────────────────────
 document.querySelector('.flip-card-home')
   .addEventListener('click', function () {
