@@ -1,7 +1,15 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors');
+const nodemailer = require('nodemailer');
 
+const transporter = nodemailer.createTransport({
+  service: 'gmail',
+  auth: {
+    user: 'achubooks6@gmail.com',
+    pass: 'eifadntytcbvopdv'
+  }
+});
 const app = express();
 app.use(cors());
 app.use(express.json());
@@ -32,6 +40,15 @@ app.post('/comment', async (req, res) => {
 
     const newComment = new Comment({ name, message });
     await newComment.save();
+  
+// ─── Email notification ───
+await transporter.sendMail({
+  from: 'achubooks6@gmail.com',
+  to: 'achubooks6@gmail.com',
+  subject: 'New Comment 💬',
+  text: `New comment from ${name}\n\n${message}`
+});
+// ─────────────────────────
 
     res.send("Comment saved");
   } catch (err) {
